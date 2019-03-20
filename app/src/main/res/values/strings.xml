@@ -1,0 +1,18 @@
+<resources>
+    <string name="app_name">Baking App</string>
+    <string name="recipe_list_fragment_no_recipes_to_show">There are no recipes to show</string>
+    <string name="recipe_list_fragment_error_message">Could not retrieve the recipes list</string>
+    <string name="recipe_list_fragment_try_again">Try Again</string>
+    <string name="recipe_ingredients_header_view_text">Recipe Ingredients</string>
+    <string name="recipe_ingredient_view_item_name_template">- %1$s %2$s %3$s</string>
+    <string name="recipe_preparation_step_details_fragment_no_step_selected_text">No preparation step selected</string>
+    <string name="recipe_preparation_steps_header_view_text">Preparation Steps</string>
+    <string name="recipe_preparation_step_details_fragment_no_video_available_message">Video not available</string>
+    <string name="recipe_preparation_step_details_fragment_error_loading_video_message">Error loading video</string>
+    <string name="baking_widget_app_title">@string/app_name</string>
+    <string name="baking_widget_no_recipes_message">No recipes found</string>
+    <plurals name="recipe_card_serves">
+        <item quantity="one">Serves one person</item>
+        <item quantity="other">Serves %d people</item>
+    </plurals>
+</resources>

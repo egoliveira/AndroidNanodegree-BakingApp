@@ -1,0 +1,100 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <data>
+
+        <import type="android.view.View" />
+
+        <import type="nanodegree.bakingapp.model.vo.PreparationStep" />
+
+        <import type="org.apache.commons.lang3.StringUtils" />
+
+        <variable
+            name="step"
+            type="androidx.lifecycle.LiveData&lt;PreparationStep&gt;" />
+
+        <variable
+            name="error"
+            type="androidx.lifecycle.LiveData&lt;Boolean&gt;" />
+
+        <variable
+            name="loadingThumbnail"
+            type="androidx.lifecycle.LiveData&lt;Boolean&gt;" />
+    </data>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <com.google.android.exoplayer2.ui.PlayerView
+            android:id="@+id/recipe_preparation_step_details_fragment_player"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:visibility="@{step != null &amp;&amp; StringUtils.isNotBlank(step.getVideoURL()) &amp;&amp; !error ? View.VISIBLE : View.INVISIBLE}"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:show_buffering="always" />
+
+        <ImageView
+            android:id="@+id/recipe_preparation_step_details_fragment_thumbnail"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:visibility="@{(step != null &amp;&amp; StringUtils.isBlank(step.getVideoURL()) &amp;&amp; StringUtils.isNotBlank(step.getThumbnailURL())) &amp;&amp; !error &amp;&amp; !loadingThumbnail ? View.VISIBLE : View.INVISIBLE}"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <ProgressBar
+            android:id="@+id/recipe_preparation_step_details_fragment_thumbnail_progress"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:visibility="@{loadingThumbnail ? View.VISIBLE : View.INVISIBLE}"
+            app:layout_constraintBottom_toTopOf="@id/recipe_preparation_step_details_fragment_thumbnail"
+            app:layout_constraintEnd_toStartOf="@id/recipe_preparation_step_details_fragment_thumbnail"
+            app:layout_constraintStart_toEndOf="@id/recipe_preparation_step_details_fragment_thumbnail"
+            app:layout_constraintTop_toBottomOf="@id/recipe_preparation_step_details_fragment_thumbnail" />
+
+        <ImageView
+            android:id="@+id/recipe_preparation_step_details_fragment_no_video_available_image"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/ic_video_off_outline_grey600_48dp"
+            android:visibility="@{(step != null &amp;&amp; StringUtils.isBlank(step.getVideoURL()) &amp;&amp; StringUtils.isBlank(step.getThumbnailURL())) || error ? View.VISIBLE : View.INVISIBLE}"
+            app:layout_constraintBottom_toTopOf="@id/recipe_preparation_step_details_fragment_no_video_available_message"
+            app:layout_constraintEnd_toStartOf="parent"
+            app:layout_constraintStart_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_chainStyle="packed" />
+
+        <TextView
+            android:id="@+id/recipe_preparation_step_details_fragment_no_video_available_message"
+            style="@style/Base.TextAppearance.AppCompat.Subhead"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:gravity="center"
+            android:text="@string/recipe_preparation_step_details_fragment_no_video_available_message"
+            android:visibility="@{step != null &amp;&amp; StringUtils.isBlank(step.getVideoURL()) &amp;&amp; StringUtils.isBlank(step.getThumbnailURL()) &amp;&amp; !error ? View.VISIBLE : View.INVISIBLE}"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/recipe_preparation_step_details_fragment_no_video_available_image" />
+
+        <TextView
+            android:id="@+id/recipe_preparation_step_details_fragment_error_loading_video_message"
+            style="@style/Base.TextAppearance.AppCompat.Subhead"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:text="@string/recipe_preparation_step_details_fragment_error_loading_video_message"
+            android:visibility="@{error ? View.VISIBLE : View.INVISIBLE}"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="@id/recipe_preparation_step_details_fragment_no_video_available_message" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</layout>

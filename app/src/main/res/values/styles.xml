@@ -1,0 +1,20 @@
+<resources>
+
+    <!-- Base application theme. -->
+    <style name="AppTheme" parent="Theme.AppCompat.Light.NoActionBar">
+        <!-- Customize your theme here. -->
+        <item name="colorPrimary">@color/colorPrimary</item>
+        <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
+        <item name="colorAccent">@color/colorAccent</item>
+    </style>
+
+    <style name="AppTheme.RecipeOverview" />
+
+    <style name="AppTheme.RecipeOverview.IngredientsHeader" parent="Base.TextAppearance.AppCompat.Title" />
+
+    <style name="AppTheme.RecipeOverview.StepsHeader" parent="Base.TextAppearance.AppCompat.Title" />
+
+    <style name="AppTheme.RecipeOverview.Ingredient" parent="Base.TextAppearance.AppCompat.Body2" />
+
+    <style name="AppTheme.RecipeOverview.Step" parent="Base.TextAppearance.AppCompat.Body2" />
+</resources>

@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+
+        <variable
+            name="step"
+            type="nanodegree.bakingapp.model.vo.PreparationStep" />
+
+        <variable
+            name="listener"
+            type="nanodegree.bakingapp.view.overview.RecipePreparationStepActionListener" />
+    </data>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/recipe_preparation_step_view_container"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="4dp"
+        android:layout_marginTop="2dp"
+        android:layout_marginEnd="4dp"
+        android:layout_marginBottom="2dp"
+        android:background="@drawable/recipe_preparation_step_background"
+        android:minHeight="40dp"
+        android:onClick="@{(view) -> listener.onPreparationStepClicked(step, view.getContext())}"
+        android:paddingStart="4dp"
+        android:paddingTop="2dp"
+        android:paddingEnd="4dp"
+        android:paddingBottom="2dp">
+
+        <ImageView
+            android:id="@+id/recipe_preparation_step_view_arrow"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/ic_chevron_right_grey600_24dp"
+            app:layout_constraintBottom_toTopOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toBottomOf="parent" />
+
+        <TextView
+            android:id="@+id/recipe_preparation_step_view_text"
+            style="@style/AppTheme.RecipeOverview.Step"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="4dp"
+            android:gravity="center_vertical"
+            android:text="@{step.shortDescription}"
+            app:layout_constraintBottom_toTopOf="parent"
+            app:layout_constraintEnd_toStartOf="@id/recipe_preparation_step_view_arrow"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="parent"
+            tools:text="Melt butter and bittersweet chocolate" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</layout>

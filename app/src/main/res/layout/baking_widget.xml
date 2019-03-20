@@ -1,0 +1,75 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/baking_widget_container"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#cc000000"
+    android:padding="@dimen/widget_margin">
+
+    <ImageView
+        android:id="@+id/baking_widget_next_recipe"
+        android:layout_width="30dp"
+        android:layout_height="30dp"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentEnd="true"
+        android:layout_marginTop="4dp"
+        android:layout_marginEnd="8dp"
+        android:src="@drawable/ic_chevron_right_white_24dp" />
+
+    <ImageView
+        android:id="@+id/baking_widget_previous_recipe"
+        android:layout_width="30dp"
+        android:layout_height="30dp"
+        android:layout_alignParentTop="true"
+        android:layout_marginTop="4dp"
+        android:layout_toStartOf="@id/baking_widget_next_recipe"
+        android:src="@drawable/ic_chevron_left_white_24dp" />
+
+    <TextView
+        android:id="@+id/baking_widget_app_title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentTop="true"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="4dp"
+        android:layout_marginEnd="8dp"
+        android:layout_toEndOf="@id/baking_widget_previous_recipe"
+        android:text="@string/baking_widget_app_title"
+        android:textColor="#ffffff"
+        android:textSize="20sp"
+        android:textStyle="bold" />
+
+    <TextView
+        android:id="@+id/baking_widget_no_recipes_message"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@id/baking_widget_app_title"
+        android:gravity="center"
+        android:text="@string/baking_widget_no_recipes_message"
+        android:textColor="#ffffff"
+        android:textSize="16sp" />
+
+    <TextView
+        android:id="@+id/baking_widget_recipe_title"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/baking_widget_app_title"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="4dp"
+        android:layout_marginEnd="8dp"
+        android:textColor="#ffffff"
+        android:textSize="18sp"
+        android:textStyle="bold"
+        tools:text="Recipe Title" />
+
+    <ListView
+        android:id="@+id/baking_widget_recipe_ingredients"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@id/baking_widget_recipe_title"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="4dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginBottom="4dp" />
+</RelativeLayout>

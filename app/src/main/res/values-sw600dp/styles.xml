@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <style name="AppTheme.RecipeOverview.IngredientsHeader" parent="Base.TextAppearance.AppCompat.Headline" />
+
+    <style name="AppTheme.RecipeOverview.StepsHeader" parent="Base.TextAppearance.AppCompat.Headline" />
+
+    <style name="AppTheme.RecipeOverview.Ingredient" parent="Base.TextAppearance.AppCompat.Subhead" />
+
+    <style name="AppTheme.RecipeOverview.Step" parent="Base.TextAppearance.AppCompat.Subhead" />
+</resources>

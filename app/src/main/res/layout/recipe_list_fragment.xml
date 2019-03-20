@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <data>
+
+        <import type="android.view.View" />
+
+        <variable
+            name="loading"
+            type="androidx.lifecycle.LiveData&lt;Boolean&gt;" />
+
+        <variable
+            name="error"
+            type="androidx.lifecycle.LiveData&lt;Boolean&gt;" />
+
+        <variable
+            name="empty"
+            type="androidx.lifecycle.LiveData&lt;Boolean&gt;" />
+
+        <variable
+            name="tryAgainClickListener"
+            type="android.view.View.OnClickListener" />
+    </data>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/recipe_list_fragment_recipes"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:layout_margin="@dimen/recipe_list_fragment_recipes_margin"
+            android:visibility="@{!loading &amp;&amp; !empty &amp;&amp; !error ? View.VISIBLE : View.INVISIBLE}"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <ProgressBar
+            android:id="@+id/recipe_list_fragment_progress"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:visibility="@{loading ? View.VISIBLE : View.GONE}"
+            app:layout_constraintBottom_toTopOf="parent"
+            app:layout_constraintEnd_toStartOf="parent"
+            app:layout_constraintStart_toEndOf="parent"
+            app:layout_constraintTop_toBottomOf="parent" />
+
+        <TextView
+            android:id="@+id/recipe_list_fragment_empty_message"
+            style="@style/Base.TextAppearance.AppCompat.Subhead"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/recipe_list_fragment_no_recipes_to_show"
+            android:textSize="16sp"
+            android:visibility="@{!loading &amp;&amp; empty &amp;&amp; !error ? View.VISIBLE : View.GONE}"
+            app:layout_constraintBottom_toTopOf="parent"
+            app:layout_constraintEnd_toStartOf="parent"
+            app:layout_constraintStart_toEndOf="parent"
+            app:layout_constraintTop_toBottomOf="parent" />
+
+        <TextView
+            android:id="@+id/recipe_list_fragment_error_message"
+            style="@style/Base.TextAppearance.AppCompat.Subhead"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/recipe_list_fragment_error_message"
+            android:textSize="16sp"
+            android:visibility="@{!loading &amp;&amp; error ? View.VISIBLE : View.GONE}"
+            app:layout_constraintBottom_toTopOf="@+id/recipe_list_fragment_try_again"
+            app:layout_constraintEnd_toStartOf="parent"
+            app:layout_constraintStart_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_chainStyle="packed" />
+
+        <Button
+            android:id="@+id/recipe_list_fragment_try_again"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:onClickListener="@{tryAgainClickListener}"
+            android:text="@string/recipe_list_fragment_try_again"
+            android:visibility="@{!loading &amp;&amp; error ? View.VISIBLE : View.GONE}"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toStartOf="parent"
+            app:layout_constraintStart_toEndOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/recipe_list_fragment_error_message" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</layout>

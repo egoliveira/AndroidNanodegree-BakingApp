@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <item name="recipe_preparation_step_details_fragment_middle_guideline_percentage" format="float" type="dimen">
+        0.40
+    </item>
+</resources>
