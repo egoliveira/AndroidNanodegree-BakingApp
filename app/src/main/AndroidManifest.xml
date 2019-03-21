@@ -32,8 +32,22 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".view.overview.RecipeOverviewActivity" />
-        <activity android:name=".view.detail.RecipePreparationStepDetailsActivity" />
+
+        <activity
+            android:name=".view.overview.RecipeOverviewActivity"
+            android:parentActivityName=".view.recipes.RecipeListActivity">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value=".view.recipes.RecipeListActivity" />
+        </activity>
+
+        <activity
+            android:name=".view.detail.RecipePreparationStepDetailsActivity"
+            android:parentActivityName=".view.recipes.RecipeListActivity">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value=".view.recipes.RecipeListActivity" />
+        </activity>
 
         <provider
             android:name=".provider.BakingContentProvider"

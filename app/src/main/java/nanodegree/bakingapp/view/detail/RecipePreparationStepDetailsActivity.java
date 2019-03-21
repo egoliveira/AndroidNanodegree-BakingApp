@@ -25,6 +25,10 @@ public class RecipePreparationStepDetailsActivity extends BaseActivity {
         if (getToolbar() != null) {
             getToolbar().setTitle(recipe.getName());
         }
+
+        if (getSupportActionBar() != null) {
+            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        }
     }
 
     @Override

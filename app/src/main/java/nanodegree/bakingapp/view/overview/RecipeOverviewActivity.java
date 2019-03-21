@@ -14,6 +14,10 @@ public class RecipeOverviewActivity extends BaseActivity {
         Recipe recipe = getIntent().getParcelableExtra("recipe");
 
         getToolbar().setTitle(recipe.getName());
+
+        if (getSupportActionBar() != null) {
+            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        }
     }
 
     @Override
