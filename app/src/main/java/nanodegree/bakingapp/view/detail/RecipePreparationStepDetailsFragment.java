@@ -19,6 +19,7 @@ import com.squareup.picasso.Picasso;
 import android.app.Activity;
 import android.content.Context;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.view.View;
 
@@ -47,6 +48,8 @@ public class RecipePreparationStepDetailsFragment extends
 
     private Player.EventListener mEventListener;
 
+    private PreparationStep mCurrentStep;
+
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
@@ -63,23 +66,6 @@ public class RecipePreparationStepDetailsFragment extends
             mPlaying = savedInstanceState.getBoolean("playing");
         }
 
-        mPlayer = ExoPlayerFactory.newSimpleInstance(getActivity());
-        mPlayer.addVideoListener(mVideoListener);
-        mPlayer.addListener(mEventListener);
-
-        if (mPlaying) {
-            mPlayer.setPlayWhenReady(true);
-            mPlaying = false;
-        }
-
-        mPlayer.addListener(new Player.EventListener() {
-            @Override
-            public void onPlayerStateChanged(boolean playWhenReady, int playbackState) {
-
-            }
-        });
-
-        getViewDataBinding().recipePreparationStepDetailsFragmentPlayer.setPlayer(mPlayer);
         getViewDataBinding().setError(getViewModel().getErrorLoadingVideo());
         getViewDataBinding().setStep(getViewModel().getStep());
         getViewDataBinding().setCanGoPrevious(getViewModel().getCanGoPrevious());
@@ -91,6 +77,32 @@ public class RecipePreparationStepDetailsFragment extends
     }
 
     @Override
+    public void onStart() {
+        super.onStart();
+
+        if (Build.VERSION.SDK_INT > Build.VERSION_CODES.M) {
+            resumePlayer();
+        }
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+
+        if (Build.VERSION.SDK_INT <= Build.VERSION_CODES.M) {
+            resumePlayer();
+        }
+
+        if (mCurrentStep != null) {
+            updatePlayer(mCurrentStep);
+
+            if (mPosition != C.TIME_UNSET) {
+                mPlayer.seekTo(mPosition);
+            }
+        }
+    }
+
+    @Override
     public void onSaveInstanceState(@NonNull Bundle outState) {
         super.onSaveInstanceState(outState);
 
@@ -99,12 +111,23 @@ public class RecipePreparationStepDetailsFragment extends
     }
 
     @Override
-    public void onDestroy() {
-        mPlayer.removeVideoListener(mVideoListener);
-        mPlayer.removeListener(mEventListener);
-        mPlayer.release();
+    public void onPause() {
+        mPosition = mPlayer.getCurrentPosition();
 
-        super.onDestroy();
+        if (Build.VERSION.SDK_INT <= Build.VERSION_CODES.M) {
+            stopPlayer();
+        }
+
+        super.onPause();
+    }
+
+    @Override
+    public void onStop() {
+        if (Build.VERSION.SDK_INT > Build.VERSION_CODES.M) {
+            stopPlayer();
+        }
+
+        super.onStop();
     }
 
     @Override
@@ -139,6 +162,85 @@ public class RecipePreparationStepDetailsFragment extends
                 .get(RecipePreparationStepDetailsViewModel.class);
     }
 
+    private void setupPlayer() {
+        mPlayer = ExoPlayerFactory.newSimpleInstance(getActivity());
+        mPlayer.addVideoListener(mVideoListener);
+        mPlayer.addListener(mEventListener);
+
+        getViewDataBinding().recipePreparationStepDetailsFragmentPlayer.setPlayer(mPlayer);
+    }
+
+    private void shutdownPlayer() {
+        mPlayer.removeVideoListener(mVideoListener);
+        mPlayer.removeListener(mEventListener);
+        mPlayer.release();
+    }
+
+    private void resumePlayer() {
+        setupPlayer();
+
+        if (mPlaying) {
+            mPlayer.setPlayWhenReady(true);
+            mPlaying = false;
+        }
+
+        getViewDataBinding().recipePreparationStepDetailsFragmentPlayer.onResume();
+    }
+
+    private void stopPlayer() {
+        mPlayer.stop();
+        getViewDataBinding().recipePreparationStepDetailsFragmentPlayer.onPause();
+
+        shutdownPlayer();
+    }
+
+    private void updatePlayer(PreparationStep step) {
+        Picasso.get()
+                .cancelRequest(getViewDataBinding().recipePreparationStepDetailsFragmentThumbnail);
+        getViewModel().setLoadingThumbnail(false);
+        getViewModel().setErrorLoadingVideo(false);
+
+        if ((!getViewModel().getErrorLoadingVideo().getValue()) && (step != null)) {
+            Context context = getContext();
+
+            if (context != null) {
+                if (StringUtils.isNotBlank(step.getVideoURL())) {
+                    DataSource.Factory upstreamDataSourceFactory = new DefaultDataSourceFactory(
+                            context, context.getString(context.getApplicationInfo().labelRes));
+                    DataSource.Factory dataSourceFactory = new CacheDataSourceFactory(
+                            ExoPlayerCache.getInstance(getContext()), upstreamDataSourceFactory);
+
+                    MediaSource source = new ExtractorMediaSource.Factory(dataSourceFactory)
+                            .createMediaSource(Uri.parse(step.getVideoURL()));
+
+                    if (mPosition == C.TIME_UNSET) {
+                        mPlayer.setPlayWhenReady(false);
+                    }
+
+                    mPlayer.prepare(source, true, true);
+                } else if (StringUtils.isNotBlank(step.getThumbnailURL())) {
+                    getViewModel().setLoadingThumbnail(true);
+
+                    Picasso.get().load(step.getThumbnailURL())
+                            .placeholder(R.drawable.recipe_card_default_image)
+                            .into(getViewDataBinding().recipePreparationStepDetailsFragmentThumbnail,
+                                    new Callback() {
+                                        @Override
+                                        public void onSuccess() {
+                                            getViewModel().setLoadingThumbnail(false);
+                                        }
+
+                                        @Override
+                                        public void onError(Exception e) {
+                                            getViewModel().setLoadingThumbnail(false);
+                                            getViewModel().setErrorLoadingVideo(true);
+                                        }
+                                    });
+                }
+            }
+        }
+    }
+
     private class PlayerVideoListener implements VideoListener {
         @Override
         public void onRenderedFirstFrame() {
@@ -163,54 +265,12 @@ public class RecipePreparationStepDetailsFragment extends
     }
 
     private class StepChangedCallback implements Observer<PreparationStep> {
-
         @Override
         public void onChanged(PreparationStep step) {
-            Picasso.get().cancelRequest(
-                    getViewDataBinding().recipePreparationStepDetailsFragmentThumbnail);
-            getViewModel().setLoadingThumbnail(false);
-            getViewModel().setErrorLoadingVideo(false);
+            mPlayer.stop();
 
-            if ((!getViewModel().getErrorLoadingVideo().getValue()) && (step != null)) {
-                Context context = getContext();
-
-                if (context != null) {
-                    if (StringUtils.isNotBlank(step.getVideoURL())) {
-                        DataSource.Factory upstreamDataSourceFactory = new DefaultDataSourceFactory(
-                                context, context.getString(context.getApplicationInfo().labelRes));
-                        DataSource.Factory dataSourceFactory = new CacheDataSourceFactory(
-                                ExoPlayerCache.getInstance(getContext()),
-                                upstreamDataSourceFactory);
-
-                        MediaSource source = new ExtractorMediaSource.Factory(dataSourceFactory)
-                                .createMediaSource(Uri.parse(step.getVideoURL()));
-
-                        if (mPosition == C.TIME_UNSET) {
-                            mPlayer.setPlayWhenReady(false);
-                        }
-
-                        mPlayer.prepare(source, true, true);
-                    } else if (StringUtils.isNotBlank(step.getThumbnailURL())) {
-                        getViewModel().setLoadingThumbnail(true);
-
-                        Picasso.get().load(step.getThumbnailURL())
-                                .placeholder(R.drawable.recipe_card_default_image)
-                                .into(getViewDataBinding().recipePreparationStepDetailsFragmentThumbnail,
-                                        new Callback() {
-                                            @Override
-                                            public void onSuccess() {
-                                                getViewModel().setLoadingThumbnail(false);
-                                            }
-
-                                            @Override
-                                            public void onError(Exception e) {
-                                                getViewModel().setLoadingThumbnail(false);
-                                                getViewModel().setErrorLoadingVideo(true);
-                                            }
-                                        });
-                    }
-                }
-            }
+            mCurrentStep = step;
+            updatePlayer(step);
         }
     }
 }
